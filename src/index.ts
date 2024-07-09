@@ -8,10 +8,10 @@ export const isWindows = os.platform() === 'win32';
 export const findFileUpwards = (
   searchFilename: string = 'package.json',
   maxDepth: number = 2,
-  startDir: string = import.meta.dirname
+  startDir?: string
 ): string => {
   let currentLevel = 0;
-  let searchPath = startDir;
+  let searchPath = startDir || process.cwd();
   do {
     const searchFilePath = path.resolve(searchPath, searchFilename);
     if (fs.existsSync(searchFilePath)) {

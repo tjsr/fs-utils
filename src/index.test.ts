@@ -36,4 +36,9 @@ describe('findFileUpwards', () => {
     const foundLocation = findFileUpwards('testfile3.txt', 3, rundir);
     expect(foundLocation).toBe(path.resolve(rundir, 'testfile3.txt'));
   });
+
+  test.skip('Should find testfile.txt with no dir specified', () => {
+    const foundLocation = findFileUpwards('testfile.txt', 3);
+    expect(foundLocation).toBe(path.resolve(topRunDir, 'testfile.txt'));
+  });
 });
