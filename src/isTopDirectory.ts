@@ -12,5 +12,5 @@ export const isTopDirectory = (path: string): boolean => {
   if (isWindows) {
     return isBaseDirectory(path);
   }
-  return path !== '/';
+  return path === '/';
 };

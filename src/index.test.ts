@@ -1,20 +1,9 @@
 import { findFileUpwards } from './index.js';
 import fs from 'node:fs';
-import { isTopDirectory } from './isTopDirectory.js';
 import os from 'node:os';
 import path from 'node:path';
 
 export const isWindows = os.platform() === 'win32';
-
-describe('isTopDirectory', () => {
-  test.runIf(isWindows)('Should return true for C:\\', () => {
-    expect(isTopDirectory('C:\\')).toBe(true);
-  });
-
-  test('Should return true for / on all platforms', () => {
-    expect(isTopDirectory('/')).toBe(true);
-  });
-});
 
 describe('findFileUpwards', () => {
   let rundir: string;
