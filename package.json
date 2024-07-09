@@ -19,7 +19,9 @@
     "clean": "npx rimraf dist build",
     "clean:all": "npx rimraf dist build node_modules",
     "lint": "eslint --config eslint.config.mjs src/*.ts",
-    "lint:fix": "eslint --fix src/*.ts"
+    "lint:fix": "eslint --fix src/*.ts",
+    "prepack": "npm test && npm run build:dist",
+    "prepublishOnly": "npm run clean"
   },
   "repository": {
     "type": "git",
