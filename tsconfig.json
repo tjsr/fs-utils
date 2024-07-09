@@ -9,7 +9,7 @@
     "types": ["vitest/globals"],
     "lib": ["ES2022"],
     "rootDir": "./src" /* Specify the root folder within your source files. */,
-
+    "sourceRoot": "./src",
     /* Emit */
     "declaration": true,                              /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
     "declarationMap": true,                           /* Create sourcemaps for d.ts files. */
@@ -43,6 +43,5 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
-  "include": ["**/*.ts"],
-  "exclude": ["vitest.config.ts", "dist", "build"]
+  "exclude": ["vitest.config.ts", "dist", "build", "node_modules"]
 }

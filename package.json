@@ -1,7 +1,7 @@
 {
-  "name": "@tjsr/npm-library-template",
+  "name": "@tjsr/fs-utils",
   "version": "0.0.1",
-  "description": "Template npm project",
+  "description": "Shared filesystem utils library",
   "type": "module",
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tjsr/express-server-helper.git"
+    "url": "git+https://github.com/tjsr/fs-utils.git"
   },
   "keywords": [
     "Express"
@@ -31,9 +31,9 @@
   "author": "Tim Rowe <tim@tjsr.id.au>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/tjsr/express-server-helper/issues"
+    "url": "https://github.com/tjsr/fs-utils/issues"
   },
-  "homepage": "https://github.com/tjsr/express-server-helper#readme",
+  "homepage": "https://github.com/tjsr/fs-utils#readme",
   "devDependencies": {
     "@tjsr/eslint-config": "github:tjsr/eslint-config#main",
     "@types/node": "^20.14.10",
