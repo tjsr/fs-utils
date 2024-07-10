@@ -24,5 +24,5 @@ export const findFileUpwards = (
     searchPath = path.resolve(searchPath, '..');
   } while (currentLevel++ < maxDepth);
 
-  throw new Error(`Could not find ${searchFilename} ${maxDepth} levels below ${startDir}`);
+  throw new Error(`Could not find ${searchFilename} ${maxDepth} levels below ${searchPath}`);
 };
