@@ -8,10 +8,10 @@ export const isWindows = os.platform() === 'win32';
 export const findFileUpwards = (
   searchFilename: string = 'package.json',
   maxDepth: number = 2,
-  startDir?: string
+  startDir: string = process.cwd()
 ): string => {
   let currentLevel = 0;
-  let searchPath = startDir || process.cwd();
+  let searchPath = startDir;
   do {
     const searchFilePath = path.resolve(searchPath, searchFilename);
     if (fs.existsSync(searchFilePath)) {
@@ -24,5 +24,5 @@ export const findFileUpwards = (
     searchPath = path.resolve(searchPath, '..');
   } while (currentLevel++ < maxDepth);
 
-  throw new Error(`Could not find ${searchFilename} ${maxDepth} levels below ${searchPath}`);
+  throw new Error(`Could not find ${searchFilename} ${maxDepth} levels below ${startDir}`);
 };
