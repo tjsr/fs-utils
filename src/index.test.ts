@@ -37,8 +37,17 @@ describe('findFileUpwards', () => {
     expect(foundLocation).toBe(path.resolve(rundir, 'testfile3.txt'));
   });
 
-  test.skip('Should find testfile.txt with no dir specified', () => {
-    const foundLocation = findFileUpwards('testfile.txt', 3);
-    expect(foundLocation).toBe(path.resolve(topRunDir, 'testfile.txt'));
+  test('Should find package.json with no start specified', () => {
+    const foundLocation = findFileUpwards('package.json', 3);
+    const resolvePath = __dirname.endsWith('src')
+      ? path.resolve(__dirname, '..', 'package.json')
+      : path.resolve(__dirname, 'package.json');
+    expect(foundLocation).toBe(resolvePath);
+  });
+
+  test('Should not find testfile.txt if search depth is limited and no base dir is given', () => {
+    expect(() => {
+      findFileUpwards('testfile.txt', 1);
+    }).toThrowError(expect.any(Error));
   });
 });
