@@ -1,6 +1,6 @@
 {
   "name": "@tjsr/fs-utils",
-  "version": "0.0.5-test-1.2",
+  "version": "0.0.5",
   "description": "Shared filesystem utils library",
   "type": "module",
   "main": "dist/esm/index.js",
