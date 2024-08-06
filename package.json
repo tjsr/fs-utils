@@ -15,6 +15,7 @@
   "scripts": {
     "test": "vitest --run && npm run lint",
     "build": "tsc",
+    "build:dev": "tsc -w",
     "build:dist": "tsc -p tsconfig.publish.json && tsc -p tsconfig.cjs.json",
     "clean": "npx rimraf dist build",
     "clean:all": "npx rimraf dist build node_modules",
@@ -43,5 +44,21 @@
     "tsx": "^4.16.2",
     "typescript": "^5.5.3",
     "vitest": "^1.6.0"
+  },
+  "nodemon": {
+    "watch": [
+      "src",
+      "package.json",
+      "tsconfig.json",
+      "tsconfig.publish.json",
+      "tsconfig.cjs.json"
+    ],
+    "ext": "ts",
+    "ignore": [
+      "dist",
+      "build"
+    ],
+    "exec": "npm run build:dist",
+    "delay": 200
   }
 }
