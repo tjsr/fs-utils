@@ -1,9 +1,9 @@
 import fs from 'fs';
 import { isTopDirectory } from './isTopDirectory.js';
-import os from 'os';
 import path from 'path';
 
-export const isWindows = os.platform() === 'win32';
+export { isWindows } from './isWindows.js';
+export { getSafeTmpDir } from './safeTmpDir.js';
 
 export const findFileUpwards = (
   searchFilename: string = 'package.json',
