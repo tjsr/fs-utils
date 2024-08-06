@@ -1,7 +1,5 @@
-import os from 'os';
+import { isWindows } from './isWindows.js';
 import path from 'path';
-
-export const isWindows = os.platform() === 'win32';
 
 export const isBaseDirectory = (p: string): boolean => {
   const parsedPath = path.parse(p);
