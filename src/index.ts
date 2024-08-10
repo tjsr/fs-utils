@@ -4,6 +4,7 @@ import path from 'path';
 
 export { isWindows } from './isWindows.js';
 export { getSafeTmpDir } from './safeTmpDir.js';
+export { stripFileExtension } from './stripFileExtension.js';
 
 export const findFileUpwards = (
   searchFilename: string = 'package.json',
