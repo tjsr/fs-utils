@@ -19,7 +19,7 @@
     }
   },
   "scripts": {
-    "test": "vitest --run && npm run lint && node --test scripts/npm-json.test.mjs",
+    "test": "vitest --run && npm run lint && node --test scripts/check-npm-json.mjs",
     "build": "tsc",
     "build:dev": "tsc -w",
     "build:dist": "tsc -p tsconfig.publish.json && tsc -p tsconfig.cjs.json && node scripts/write-package-boundaries.mjs",
