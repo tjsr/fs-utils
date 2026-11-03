@@ -12,12 +12,12 @@ const run = (command, args, cwd = temporary) =>
 
 try {
   // build:dist has just run; avoid recursively executing prepack.
-  const packed = JSON.parse(execFileSync(npm,
+  const packed = process.env.FS_UTILS_PACKAGE ? null : JSON.parse(execFileSync(npm,
     ['pack', '--ignore-scripts', '--json', '--pack-destination', temporary],
     { cwd: root, encoding: 'utf8' }));
   writeFileSync(join(temporary, 'package.json'), '{"private":true}\n');
   run(npm, ['install', '--ignore-scripts', '--no-audit', '--no-fund',
-    '--package-lock=false', join(temporary, (Array.isArray(packed) ? packed[0] : Object.values(packed)[0]).filename)]);
+    '--package-lock=false', process.env.FS_UTILS_PACKAGE || join(temporary, (Array.isArray(packed) ? packed[0] : Object.values(packed)[0]).filename)]);
   const source = `import { stripFileExtension, findFileUpwards } from '@tjsr/fs-utils';
 import { strict as assert } from 'node:assert';
 assert.equal(stripFileExtension('example.txt'), 'example');

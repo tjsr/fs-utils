@@ -14,7 +14,7 @@ jobs:
       uses: actions/setup-node@v7
       with:
         node-version: ${{ matrix.node-version }}
-    
+
     - name: Check out repository code
       uses: actions/checkout@v7
 
@@ -55,4 +55,27 @@ jobs:
 
     - name: Validate package contents
       run: npm pack --dry-run
-  
+
+  publish-approved-fix:
+    name: Publish approved fs-utils 0.0.9
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && startsWith(github.event.head_commit.message, 'Release fs-utils 0.0.9')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    concurrency:
+      group: fs-utils-approved-release-0.0.9
+      cancel-in-progress: false
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://npm.pkg.github.com
+          scope: '@tjsr'
+      - run: npm install --global npm@latest
+      - run: npm ci
+      - run: node scripts/publish-approved-release.mjs
