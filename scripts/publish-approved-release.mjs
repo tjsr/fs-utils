@@ -13,11 +13,14 @@ const versions = JSON.parse(npm(['view', pkg.name, 'versions', '--json', '--regi
 if ([versions].flat().includes(pkg.version)) {
   throw new Error('Version already exists; refusing to publish or overwrite it');
 }
-const packed = JSON.parse(npm(['pack', '--json']));
+execFileSync('npm', ['run', 'prepack'], { stdio: 'inherit' });
+const packed = JSON.parse(npm(['pack', '--ignore-scripts', '--json']));
 const entry = Array.isArray(packed) ? packed[0] : Object.values(packed)[0];
 const integrity = 'sha512-' + createHash('sha512').update(readFileSync(entry.filename)).digest('base64');
 npm(['publish', entry.filename, '--registry', registry, '--tag', 'latest']);
-const published = npm(['view', pkg.name + '@' + pkg.version, 'dist.integrity', '--registry', registry]);
+const metadata = JSON.parse(npm(['view', pkg.name + '@' + pkg.version, '--json', '--registry', registry]));
+console.log(JSON.stringify({ name: metadata.name, version: metadata.version, dist: metadata.dist, dependencies: metadata.dependencies, engines: metadata.engines, license: metadata.license }));
+const published = metadata.dist.integrity;
 if (published !== integrity) throw new Error('Published tarball integrity does not match');
 execFileSync(process.execPath, ['scripts/test-package.mjs'], {
   stdio: 'inherit', env: { ...process.env, FS_UTILS_PACKAGE: pkg.name + '@' + pkg.version },
