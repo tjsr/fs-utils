@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const npm = (args) => execFileSync('npm', args, { encoding: 'utf8' }).trim();
-const unpack = (value) => Array.isArray(value) ? value[0] : Object.values(value)[0];
+import { firstNpmRecord as unpack, npmVersions } from './npm-json.mjs';
 const sha512 = (path) => 'sha512-' + createHash('sha512').update(readFileSync(path)).digest('base64');
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
 const verifyOnly = process.argv.includes('--verify-only');
@@ -17,7 +17,7 @@ const registry = 'https://npm.pkg.github.com';
 let expectedIntegrity;
 if (!verifyOnly) {
   const versions = JSON.parse(npm(['view', pkg.name, 'versions', '--json', '--registry', registry]));
-  if ([versions].flat().includes(pkg.version)) {
+  if (npmVersions(versions).includes(pkg.version)) {
     throw new Error('Version already exists; refusing to publish or overwrite it');
   }
   execFileSync('npm', ['run', 'prepack'], { stdio: 'inherit' });
@@ -26,7 +26,7 @@ if (!verifyOnly) {
   npm(['publish', entry.filename, '--registry', registry, '--tag', 'latest']);
 }
 const raw = JSON.parse(npm(['view', pkg.name + '@' + pkg.version, '--json', '--registry', registry]));
-const metadata = raw.dist ? raw : unpack(raw);
+const metadata = unpack(raw);
 if (metadata.name !== pkg.name || metadata.version !== pkg.version) throw new Error('Wrong registry version');
 console.log(JSON.stringify({ name: metadata.name, version: metadata.version, dist: metadata.dist,
   dependencies: metadata.dependencies, engines: metadata.engines, license: metadata.license }));
