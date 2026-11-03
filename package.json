@@ -1,28 +1,35 @@
 {
   "name": "@tjsr/fs-utils",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Shared filesystem utils library",
   "type": "module",
-  "main": "dist/esm/index.js",
+  "main": "dist/cjs/index.js",
   "types": "dist/esm/index.d.ts",
   "module": "dist/esm/index.js",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
     }
   },
   "scripts": {
     "test": "vitest --run && npm run lint",
     "build": "tsc",
     "build:dev": "tsc -w",
-    "build:dist": "tsc -p tsconfig.publish.json && tsc -p tsconfig.cjs.json",
+    "build:dist": "tsc -p tsconfig.publish.json && tsc -p tsconfig.cjs.json && node scripts/write-package-boundaries.mjs",
     "clean": "npx rimraf dist build",
     "clean:all": "npx rimraf dist build node_modules",
     "lint": "eslint --config eslint.config.mjs src/*.ts",
     "lint:fix": "eslint --fix src/*.ts",
     "prepack": "npm test && npm run build:dist",
-    "prepublishOnly": "npm run clean"
+    "prepublishOnly": "npm run clean",
+    "test:package": "npm run build:dist && node scripts/test-package.mjs"
   },
   "repository": {
     "type": "git",
