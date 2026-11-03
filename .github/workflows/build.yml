@@ -79,3 +79,24 @@ jobs:
       - run: npm install --global npm@latest
       - run: npm ci
       - run: node scripts/publish-approved-release.mjs
+
+  verify-published-fix:
+    name: Verify published fs-utils 0.0.9
+    needs: build
+    if: github.ref == 'refs/heads/codex/verify-published-fs-utils'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://npm.pkg.github.com
+          scope: '@tjsr'
+      - run: npm install --global npm@latest
+      - run: npm ci
+      - run: node scripts/publish-approved-release.mjs --verify-only
