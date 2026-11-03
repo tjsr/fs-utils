@@ -4,21 +4,25 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22, 24, 26]
     env:
       NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - name: Use Node.js
-      uses: actions/setup-node@main
+      uses: actions/setup-node@v7
       with:
-        node-version: ${{ vars.NODE_VERSION }}
-    
+        node-version: ${{ matrix.node-version }}
+
     - name: Check out repository code
-      uses: actions/checkout@main
+      uses: actions/checkout@v7
 
     # Setup .npmrc file to publish to GitHub Packages
-    - uses: actions/setup-node@v6
+    - uses: actions/setup-node@v7
       with:
-        node-version: ${{ vars.NODE_VERSION }}
+        node-version: ${{ matrix.node-version }}
         registry-url: 'https://npm.pkg.github.com'
 
     - name: Cache node modules
@@ -30,11 +34,14 @@ jobs:
         # npm cache files are stored in `~/.npm` on Linux/macOS
         path: ~/.npm
         # todo - change this so we are less restrictive on package-lock changes
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-${{ matrix.node-version }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
+          ${{ runner.os }}-${{ matrix.node-version }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-${{ matrix.node-version }}-build-
           ${{ runner.os }}-
+
+    - name: Use latest npm
+      run: npm install --global npm@latest
 
     - run: npm ci
 
@@ -45,9 +52,52 @@ jobs:
 
     - run: npm run test
     - run: npm run build
+    - run: npm run test:package
 
-    - name: Run lint at end on all other branches
-      if: github.ref != 'refs/head/main' && github.ref != 'refs/head/prod'
-      run: |
-        npm publish --dry-run
-  
+    - name: Validate package contents
+      run: npm pack --dry-run
+
+  publish-approved-fix:
+    name: Publish approved fs-utils 0.0.9
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && startsWith(github.event.head_commit.message, 'Release fs-utils 0.0.9')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    concurrency:
+      group: fs-utils-approved-release-0.0.9
+      cancel-in-progress: false
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://npm.pkg.github.com
+          scope: '@tjsr'
+      - run: npm install --global npm@latest
+      - run: npm ci
+      - run: node scripts/publish-approved-release.mjs
+
+  verify-published-fix:
+    name: Verify published fs-utils 0.0.9
+    needs: build
+    if: github.ref == 'refs/heads/codex/verify-published-fs-utils'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://npm.pkg.github.com
+          scope: '@tjsr'
+      - run: npm install --global npm@latest
+      - run: npm ci
+      - run: node scripts/publish-approved-release.mjs --verify-only
