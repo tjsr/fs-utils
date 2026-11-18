@@ -46,7 +46,7 @@
   "homepage": "https://github.com/tjsr/fs-utils#readme",
   "devDependencies": {
     "@tjsr/eslint-config": "github:tjsr/eslint-config#main",
-    "@types/node": "^20.14.10",
+    "@types/node": "^20.19.43",
     "rimraf": "^6.0.0",
     "tsx": "^4.16.2",
     "typescript": "^6.0.3",
