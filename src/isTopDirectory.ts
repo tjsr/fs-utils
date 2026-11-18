@@ -1,4 +1,4 @@
-import { isWindows } from './isWindows.js';
+import { isWindows } from './isWindows.ts';
 import path from 'path';
 
 export const isBaseDirectory = (p: string): boolean => {
