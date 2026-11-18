@@ -1,10 +1,10 @@
 import fs from 'fs';
-import { isTopDirectory } from './isTopDirectory.js';
+import { isTopDirectory } from './isTopDirectory.ts';
 import path from 'path';
 
-export { isWindows } from './isWindows.js';
-export { getSafeTmpDir } from './safeTmpDir.js';
-export { stripFileExtension } from './stripFileExtension.js';
+export { isWindows } from './isWindows.ts';
+export { getSafeTmpDir } from './safeTmpDir.ts';
+export { stripFileExtension } from './stripFileExtension.ts';
 
 export const findFileUpwards = (
   searchFilename: string = 'package.json',
