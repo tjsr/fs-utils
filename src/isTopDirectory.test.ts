@@ -1,5 +1,5 @@
-import { isTopDirectory } from './isTopDirectory.js';
-import { isWindows } from './index.test.js';
+import { isTopDirectory } from './isTopDirectory.ts';
+import { isWindows } from './index.test.ts';
 
 describe('isTopDirectory', () => {
   test.runIf(isWindows)('Should return true for C:\\', () => {

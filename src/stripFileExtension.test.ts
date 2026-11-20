@@ -1,4 +1,4 @@
-import { stripFileExtension } from './stripFileExtension.js';
+import { stripFileExtension } from './stripFileExtension.ts';
 
 describe('stripFileExtension', () => {
   it('should remove the last extension when no specific extension is provided', () => {

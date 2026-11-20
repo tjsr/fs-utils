@@ -6,18 +6,20 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const temporary = mkdtempSync(join(tmpdir(), 'fs-utils-package-'));
-const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const npmCli = process.env.npm_execpath;
+const npm = npmCli ? process.execPath : (process.platform === 'win32' ? 'npm.cmd' : 'npm');
+const npmArgs = (args) => npmCli ? [npmCli, ...args] : args;
 const run = (command, args, cwd = temporary) =>
   execFileSync(command, args, { cwd, stdio: 'inherit' });
 
 try {
   // build:dist has just run; avoid recursively executing prepack.
   const packed = process.env.FS_UTILS_PACKAGE ? null : JSON.parse(execFileSync(npm,
-    ['pack', '--ignore-scripts', '--json', '--pack-destination', temporary],
+    npmArgs(['pack', '--ignore-scripts', '--json', '--pack-destination', temporary]),
     { cwd: root, encoding: 'utf8' }));
   writeFileSync(join(temporary, 'package.json'), '{"private":true}\n');
-  run(npm, ['install', '--ignore-scripts', '--no-audit', '--no-fund',
-    '--package-lock=false', process.env.FS_UTILS_PACKAGE || join(temporary, (Array.isArray(packed) ? packed[0] : Object.values(packed)[0]).filename)]);
+  run(npm, npmArgs(['install', '--ignore-scripts', '--no-audit', '--no-fund',
+    '--package-lock=false', process.env.FS_UTILS_PACKAGE || join(temporary, (Array.isArray(packed) ? packed[0] : Object.values(packed)[0]).filename)]));
   const source = `import { stripFileExtension, findFileUpwards } from '@tjsr/fs-utils';
 import { strict as assert } from 'node:assert';
 assert.equal(stripFileExtension('example.txt'), 'example');

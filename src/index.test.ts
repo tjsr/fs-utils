@@ -1,4 +1,4 @@
-import { findFileUpwards } from './index.js';
+import { findFileUpwards } from './index.ts';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
